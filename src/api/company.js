@@ -31,9 +31,15 @@ exports.setup = (server, client) => {
         } else {
           reply(rows[0]);
         }
-        reply(row);
       } catch (e) {
         reply(e.toString()).code(500)
+      }
+    },
+    config: {
+      validate: {
+        params: {
+          guid: Joi.string().uuid()
+        }
       }
     }
   });
