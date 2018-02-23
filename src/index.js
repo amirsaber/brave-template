@@ -1,5 +1,7 @@
-const config = require('config');
 const Hapi = require('hapi');
+const AuthBearer = require('hapi-auth-bearer-token');
+
+const config = require('config');
 const async = require('async');
 const _ = require('underscore');
 const assert = require('assert')
@@ -9,17 +11,32 @@ const pgc = require('./pgc');
 const stats = require('./api/stats');
 const company = require('./api/company');
 
-let kickoff = (err, connections) => {
+let kickoff = async (err, connections) => {
   if (err) {
     throw new Error(err);
   }
 
-  const port = config.get('port');
-  const host = config.get('host');
-  const server = new Hapi.Server()
+  const PORT = config.get('PORT');
+  const HOST = config.get('HOST');
+  const server = new Hapi.Server();
+
   const connection = server.connection({
-    host: host,
-    port: port
+    host: HOST,
+    port: PORT
+  });
+
+  // Setup Auth Strategy
+  server.register(AuthBearer, (err) => {
+    server.auth.strategy('simple', 'bearer-access-token', {
+      validateFunc: function (token, callback) {
+        const AUTH_TOKEN = config.get('AUTH_TOKEN');
+        if (token === AUTH_TOKEN) {
+          return callback(null, true, { token: token })
+        }
+        return callback(null, false, { token: token })
+      }
+    });
+    server.auth.default('simple');
   });
 
   // Setup the APIs

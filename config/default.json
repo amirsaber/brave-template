@@ -1,5 +1,6 @@
 {
-    "host": "localhost",
-    "port": 3010,
-    "DATABASE_URL": "postgres://postgres:postgres@localhost:32772/company"
+    "HOST": "localhost",
+    "PORT": 3010,
+    "DATABASE_URL": "postgres://postgres:postgres@localhost:32772/company",
+    "AUTH_TOKEN": "secret"
 }
