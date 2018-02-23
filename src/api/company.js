@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const uuid = require('uuid');
+const _ = require('underscore');
 
 const createQuery = 'INSERT INTO companies ( id, name, street, city, state ) VALUES ( $1, $2, $3, $4, $5 )';
 const getByIdQuery = 'SELECT * FROM companies WHERE id = $1';
@@ -15,7 +16,7 @@ exports.setup = (server, client) => {
       try {
         let query = getAllQuery;
         const params = request.query;
-        Object.keys(params).forEach(function (key, index) {
+        _.each(Object.keys(params), function (key, index) {
           if (index !== 0) {
             query += ' AND'
           } else if (index === 0) {
