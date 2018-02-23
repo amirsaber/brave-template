@@ -20,6 +20,25 @@ exports.setup = (server, client) => {
   });
 
   server.route({
+    method: 'GET',
+    path: '/api/1/company/{guid}',
+    handler: async function (request, reply) {
+      const guid = request.params.guid;
+      try {
+        const rows = (await client.query(getByIdQuery, [guid])).rows;
+        if (rows.length < 1) {
+          reply().code(404);
+        } else {
+          reply(rows[0]);
+        }
+        reply(row);
+      } catch (e) {
+        reply(e.toString()).code(500)
+      }
+    }
+  });
+
+  server.route({
     method: 'POST',
     path: '/api/1/company',
     handler: async function (request, reply) {
