@@ -13,10 +13,32 @@ exports.setup = (server, client) => {
     path: '/api/1/company',
     handler: async function (request, reply) {
       try {
-        const rows = (await client.query(getAllQuery)).rows;
+        let query = getAllQuery;
+        const params = request.query;
+        Object.keys(params).forEach(function (key, index) {
+          if (index !== 0) {
+            query += ' AND'
+          } else if (index === 0) {
+            query += ' WHERE';
+          }
+          const val = params[key];
+          query += ` ${key}='${val}'`;
+        });
+        const rows = (await client.query(query)).rows;
         reply(rows);
       } catch (e) {
         reply(e.toString()).code(500)
+      }
+    },
+    config: {
+      validate: {
+        query: {
+          id: Joi.string().uuid(),
+          name: Joi.string(),
+          street: Joi.string(),
+          city: Joi.string(),
+          state: Joi.string()
+        }
       }
     }
   });
