@@ -4,7 +4,8 @@ const AuthBearer = require('hapi-auth-bearer-token');
 const config = require('config');
 const async = require('async');
 const _ = require('underscore');
-const assert = require('assert')
+const assert = require('assert');
+const CronJob = require('cron').CronJob;
 
 const pgc = require('./pgc');
 
@@ -15,6 +16,11 @@ let kickoff = async (err, connections) => {
   if (err) {
     throw new Error(err);
   }
+
+  const job = new CronJob('00 * * * * *', function () {
+    connections.pg.query('REFRESH MATERIALIZED VIEW public."companyByState"');
+  });
+  job.start();
 
   const PORT = config.get('PORT');
   const HOST = config.get('HOST');

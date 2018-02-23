@@ -1,6 +1,6 @@
 const _ = require('underscore');
 
-const companyByStateQuery = 'SELECT COUNT(*) as count, state FROM companies GROUP BY state';
+const companyByStateQuery = 'SELECT * FROM public."companyByState"';
 
 exports.setup = (server, client) => {
   server.route({
