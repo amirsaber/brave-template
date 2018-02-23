@@ -3,7 +3,7 @@ exports.setup = (server, client) => {
     method: 'GET',
     path: '/api/1/company',
     handler: async function (request, reply) {
-      return 'Hello, world!';
+      reply('Hello, world!');
     }
   });
 }

@@ -2,6 +2,7 @@ const config = require('config');
 const Hapi = require('hapi');
 const async = require('async');
 const _ = require('underscore');
+const assert = require('assert')
 
 const pgc = require('./pgc');
 
@@ -12,9 +13,11 @@ let kickoff = (err, connections) => {
   if (err) {
     throw new Error(err);
   }
+
   const port = config.get('port');
   const host = config.get('host');
-  const server = new Hapi.Server({
+  const server = new Hapi.Server()
+  const connection = server.connection({
     host: host,
     port: port
   });
@@ -24,7 +27,7 @@ let kickoff = (err, connections) => {
 
   server.start((err) => {
     assert(!err, `error starting service ${err}`);
-    console.log('Analytics service started');
+    console.log('Service started');
   });
 }
 
